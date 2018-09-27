@@ -1,0 +1,24 @@
+{
+  "name": "node-keksobooking",
+  "version": "0.0.1",
+  "description": "учебный проект на интенсиве - Профессиональный NodeJS, уровень 1 - от html academy",
+  "main": "index.js",
+  "scripts": {
+    "test:lint": "eslint .",
+    "test": "npm run test:lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sydd2005/254645-keksobooking-1.git"
+  },
+  "author": "Spiridonov Dmitry (https://github.com/sydd2005)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sydd2005/254645-keksobooking-1/issues"
+  },
+  "homepage": "https://github.com/sydd2005/254645-keksobooking-1#readme",
+  "devDependencies": {
+    "eslint": "5.6.0",
+    "eslint-config-htmlacademy": "0.5.2"
+  }
+}

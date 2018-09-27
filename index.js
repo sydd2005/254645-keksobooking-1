@@ -1,3 +1,5 @@
+'use strict';
+
 const unknownCommandSymbol = Symbol(`unknown command`);
 
 const CommandType = {
