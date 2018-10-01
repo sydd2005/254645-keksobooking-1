@@ -1,41 +1,23 @@
 'use strict';
 
-const author = require(`./author`);
-const description = require(`./description`);
-const empty = require(`./empty`);
-const help = require(`./help`);
-const license = require(`./license`);
-const version = require(`./version`);
-const unknown = require(`./unknown`);
+const commands = [];
+commands.push(require(`./author`));
+commands.push(require(`./description`));
+commands.push(require(`./empty`));
+commands.push(require(`./help`));
+commands.push(require(`./license`));
+commands.push(require(`./version`));
+const unknownCommand = require(`./unknown`);
 
-const unknownCommandSymbol = Symbol(`unknown command`);
+const EMPTY_COMMAND = ``;
+const COMMAND_PREFIX = `--`;
 
-const CommandType = {
-  AUTHOR: `--author`,
-  DESCRIPTION: `--description`,
-  HELP: `--help`,
-  LICENSE: `--license`,
-  VERSION: `--version`,
-  EMPTY: ``,
-  UNKNOWN: unknownCommandSymbol,
-};
-
-const COMMAND_MAP = {
-  [CommandType.AUTHOR]: author,
-  [CommandType.DESCRIPTION]: description,
-  [CommandType.EMPTY]: empty,
-  [CommandType.HELP]: help,
-  [CommandType.LICENSE]: license,
-  [CommandType.VERSION]: version,
-  [CommandType.UNKNOWN]: unknown,
-};
-
-const commandType = process.argv.slice(2)[0] || CommandType.EMPTY;
-const command = COMMAND_MAP[commandType];
+const commandName = (process.argv.slice(2)[0] || EMPTY_COMMAND).slice(COMMAND_PREFIX.length);
+const command = commands.find((item) => item.name === commandName);
 
 if (command !== undefined) {
   command.execute();
 } else {
-  COMMAND_MAP[CommandType.UNKNOWN].execute(commandType);
+  unknownCommand.execute(commandName);
   process.exit(1);
 }

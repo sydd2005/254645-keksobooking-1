@@ -1,6 +1,6 @@
 {
   "name": "node-keksobooking",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "учебный проект на интенсиве - Профессиональный NodeJS, уровень 1 - от html academy",
   "main": "index.js",
   "scripts": {
