@@ -1,6 +1,6 @@
 'use strict';
 
-require(`colors`);
+const colors = require(`colors/safe`);
 const author = require(`./author`);
 const packageDescription = require(`./description`);
 const license = require(`./license`);
@@ -17,7 +17,7 @@ const name = `help`;
 const description = `печатает справочную информацию`;
 commands.unshift({name, description});
 
-const commandsInfo = commands.map((command) => `--${command.name.grey} — ${command.description.green}`).join(`;\n`) + `.`;
+const commandsInfo = commands.map((command) => `--${colors.grey(command.name)} — ${colors.green(command.description)}`).join(`;\n`) + `.`;
 module.exports = {
   name,
   description,

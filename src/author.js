@@ -1,12 +1,12 @@
 'use strict';
 
-require(`colors`);
+const colors = require(`colors/safe`);
 const packageInfo = require(`../package.json`);
 
 module.exports = {
   name: `author`,
   description: `печатает автора приложения`,
   execute() {
-    console.log(`Автор: ${packageInfo.author.green}`);
+    console.log(`Автор: ${colors.green(packageInfo.author)}`);
   },
 };

@@ -1,12 +1,12 @@
 'use strict';
 
-require(`colors`);
+const colors = require(`colors/safe`);
 const packageInfo = require(`../package.json`);
 
 module.exports = {
   name: `license`,
   description: `печатает тип лицензии`,
   execute() {
-    console.log(`Лицензия: ${packageInfo.license.bold}`);
+    console.log(`Лицензия: ${colors.bold(packageInfo.license)}`);
   },
 };
