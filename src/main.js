@@ -13,7 +13,7 @@ const EMPTY_COMMAND = ``;
 const COMMAND_PREFIX = `--`;
 
 const commandName = (process.argv.slice(2)[0] || EMPTY_COMMAND).slice(COMMAND_PREFIX.length);
-const command = commands.find((command) => command.name === commandName);
+const command = commands.find((item) => item.name === commandName);
 
 if (command !== undefined) {
   command.execute();
