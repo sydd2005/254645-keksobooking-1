@@ -10,7 +10,7 @@ const interpolateString = (target, ...values) => {
 
 module.exports = {
   name: `unknown`,
-  description: `Печатает список доступных команд с описанием`,
+  description: `печатает список доступных команд с описанием в случае неизвестной команды`,
   execute(command) {
     console.error(interpolateString(UNKNOWN_COMMAND_MESSAGE, command));
     helpCommand.execute();
