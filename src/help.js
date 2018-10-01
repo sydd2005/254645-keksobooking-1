@@ -1,14 +1,21 @@
 'use strict';
 
+const commands = [];
+commands.push(require(`./author`));
+commands.push(require(`./description`));
+commands.push(require(`./license`));
+commands.push(require(`./version`));
+
+const name = `help`;
+const description = `печатает справочную информацию`;
+commands.unshift({name, description});
+
+const commandsInfo = commands.map((command) => `--${command.name} — ${command.description}`).join(`;\n`) + `.`;
 module.exports = {
-  name: `help`,
-  description: `Печатает руководство по использованию программы`,
+  name,
+  description,
   execute() {
     console.log(`Доступные команды:
---help        — печатает справочную информацию;
---version     — печатает версию приложения;
---author      — печатает автора приложения;
---license     — печатает тип лицензии;
---description — печатает описание приложения.`);
+${commandsInfo}`);
   },
 };
