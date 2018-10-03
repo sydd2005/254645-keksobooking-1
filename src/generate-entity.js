@@ -132,7 +132,6 @@ const generateEntity = () => {
     location,
     date: generateRandomIntegerInclusive(earliestTimestamp, currentTimestamp),
   };
-  console.log(entity);
   return entity;
 };
 
