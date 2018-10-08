@@ -1,9 +1,8 @@
 'use strict';
 
 const readline = require(`readline`);
-const fs = require(`fs`);
-const {promisify} = require(`util`);
 const {generateEntity} = require(`./generate-entity`);
+const {saveFile} = require(`./save-file`);
 
 const AnswerType = {
   POSITIVE: `y`,
@@ -19,8 +18,6 @@ const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
-
-const writeFile = promisify(fs.writeFile);
 
 const question = (query) => {
   return new Promise((resolve) => {
@@ -98,13 +95,6 @@ const askForFilePathToSave = async (previousAnswerResult) => {
     shouldBreak: false,
     retryMessage,
   };
-};
-
-const saveFile = async (filePathToSave, dataToSave, overwriteIfExists = false) => {
-  const flag = overwriteIfExists ? `w` : `wx`;
-  await writeFile(filePathToSave, dataToSave, {flag});
-  console.log(`Запись данных произведена успешно!`);
-  return true;
 };
 
 const execute = async () => {
