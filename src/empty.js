@@ -14,14 +14,15 @@ const ELEMENTS_COUNT = {
   max: 10,
 };
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
-
 const question = (query) => {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
   return new Promise((resolve) => {
     rl.question(query, (answer) => {
+      rl.close();
       resolve(answer);
     });
   });
@@ -110,11 +111,9 @@ const execute = async () => {
   for (const questionHandler of questionHandlers) {
     previousAnswerResult = await questionCyclically(questionHandler, [previousAnswerResult]);
     if (previousAnswerResult.shouldBreak) {
-      return rl.close();
+      return;
     }
   }
-
-  return rl.close();
 };
 
 module.exports = {

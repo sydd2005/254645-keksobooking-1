@@ -1,24 +1,14 @@
 'use strict';
 
-const author = require(`./author`);
-const description = require(`./description`);
 const empty = require(`./empty`);
 const help = require(`./help`);
-const license = require(`./license`);
-const version = require(`./version`);
 const unknownCommand = require(`./unknown`);
+const availableCommands = require(`./commands`);
 
 const EMPTY_COMMAND = ``;
 const COMMAND_PREFIX = `--`;
 
-const commands = [
-  author,
-  description,
-  empty,
-  help,
-  license,
-  version,
-];
+const commands = availableCommands.concat([help, empty]);
 
 const commandName = (process.argv.slice(2)[0] || EMPTY_COMMAND);
 const command = commands.find((item) => item.name === commandName.slice(COMMAND_PREFIX.length));

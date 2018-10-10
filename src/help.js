@@ -1,17 +1,9 @@
 'use strict';
 
 const colors = require(`colors/safe`);
-const author = require(`./author`);
-const packageDescription = require(`./description`);
-const license = require(`./license`);
-const version = require(`./version`);
+const availableCommands = require(`./commands`);
 
-const commands = [
-  author,
-  packageDescription,
-  license,
-  version,
-];
+const commands = availableCommands.slice();
 
 const name = `help`;
 const description = `печатает справочную информацию`;
