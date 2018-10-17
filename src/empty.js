@@ -11,7 +11,7 @@ const AnswerType = {
 
 const ELEMENTS_COUNT = {
   min: 1,
-  max: 10,
+  max: 100,
 };
 
 const question = (query) => {
