@@ -1,6 +1,7 @@
 'use strict';
 
 const express = require(`express`);
+const multer = require(`multer`);
 const {isInteger} = require(`./utils`);
 const WrongParamsError = require(`./custom-errors/wrong-params-error`);
 const NotFoundError = require(`./custom-errors/not-found-error`);
@@ -11,6 +12,8 @@ const DEFAULT_SKIP_COUNT = 0;
 
 // eslint-disable-next-line new-cap
 const offersRouter = express.Router();
+const jsonParser = express.json();
+const multiParser = multer().none();
 
 offersRouter.get(``, (req, res) => {
   const offersLimit = req.query.limit || DEFAULT_LIMIT;
@@ -35,6 +38,14 @@ offersRouter.get(`/:date`, (req, res) => {
     throw new NotFoundError(`Нет такого предложения!`);
   }
   res.send(foundResult);
+});
+
+offersRouter.post(``, jsonParser, multiParser, (req, res) => {
+  const saveResult = Object.assign({}, req.body);
+  saveResult.guests = parseInt(saveResult.guests, 10);
+  saveResult.price = parseInt(saveResult.price, 10);
+  saveResult.rooms = parseInt(saveResult.rooms, 10);
+  res.send(saveResult);
 });
 
 module.exports = offersRouter;
