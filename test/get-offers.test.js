@@ -75,8 +75,12 @@ describe(`GET /api/offers`, async () => {
       .expect(400)
       .expect(`Content-Type`, /json/);
 
-    const badArgumentsMessage = response.body;
-    assert.strictEqual(badArgumentsMessage.description, `Неправильно указаны параметры!`);
+    const badArguments = JSON.parse(response.body);
+    assert.deepStrictEqual(badArguments[0], {
+      error: `Wrong Parameter Error`,
+      fieldName: `limit`,
+      errorMessage: `Некорректное значение параметра limit, ожидалось целое значение, указано - "js8".`,
+    });
   });
 
   it(`should return 400 with bad value of skip parameter`, async () => {
@@ -86,8 +90,12 @@ describe(`GET /api/offers`, async () => {
       .expect(400)
       .expect(`Content-Type`, /json/);
 
-    const badArgumentsMessage = response.body;
-    assert.strictEqual(badArgumentsMessage.description, `Неправильно указаны параметры!`);
+    const badArguments = JSON.parse(response.body);
+    assert.deepStrictEqual(badArguments[0], {
+      error: `Wrong Parameter Error`,
+      fieldName: `skip`,
+      errorMessage: `Некорректное значение параметра skip, ожидалось целое значение, указано - "jaipq".`,
+    });
   });
 
 });
@@ -114,8 +122,11 @@ describe(`GET /api/offers/:date`, () => {
       .expect(404)
       .expect(`Content-Type`, /json/);
 
-    const notFoundMessage = response.body;
-    assert.strictEqual(notFoundMessage.description, `Нет такого предложения!`);
+    const notFoundError = JSON.parse(response.body)[0];
+    assert.deepStrictEqual(notFoundError, {
+      error: `Данных не найдено`,
+      errorMessage: `Нет такого предложения!`,
+    });
   });
 
 });

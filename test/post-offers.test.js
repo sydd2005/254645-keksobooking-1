@@ -46,4 +46,25 @@ describe(`POST /api/offers`, async () => {
     return response;
   });
 
+  it(`should respond with 400 and title required validation error`, async () => {
+    const badSample = {
+      title: ``,
+    };
+    const response = await request(app)
+    .post(`/api/offers`)
+    .send(badSample)
+    .set(`Accept`, `application/json`)
+    .set(`Content-Type`, `application/json`)
+    .expect(400)
+    .expect(`Content-Type`, /json/);
+
+    const errors = JSON.parse(response.body);
+    assert.ok(errors.length > 0);
+
+    const titleRequiredError = errors.find((it) => it.fieldName === `title` && it.errorMessage === `is required`);
+    assert.ok(titleRequiredError);
+
+    return response;
+  });
+
 });

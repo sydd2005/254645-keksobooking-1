@@ -13,11 +13,7 @@ app.use(express.static(`${__dirname}/../static/`));
 app.use(`/api/offers`, offersRouter);
 
 app.use((err, req, res, _next) => {
-  const errorMessage = {
-    status: err.statusCode,
-    description: err.message,
-  };
-  res.status(err.statusCode).send(errorMessage);
+  res.status(err.statusCode).send(err);
 });
 
 const execute = () => {

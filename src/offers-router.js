@@ -2,9 +2,9 @@
 
 const express = require(`express`);
 const multer = require(`multer`);
-const {isInteger} = require(`./utils`);
-const WrongParamsError = require(`./custom-errors/wrong-params-error`);
 const NotFoundError = require(`./custom-errors/not-found-error`);
+const {validateParams} = require(`./validation/validate-params`);
+const {validateOffer} = require(`./validation/validate-offer`);
 const offers = require(`../data/offers.json`);
 
 const DEFAULT_LIMIT = 20;
@@ -16,16 +16,16 @@ const jsonParser = express.json();
 const multiParser = multer().none();
 
 offersRouter.get(``, (req, res) => {
-  const offersLimit = req.query.limit || DEFAULT_LIMIT;
-  const skipCount = req.query.skip || DEFAULT_SKIP_COUNT;
-  if (!isInteger(offersLimit) || !isInteger(skipCount)) {
-    throw new WrongParamsError(`Неправильно указаны параметры!`);
-  }
-  const data = offers.slice(skipCount).slice(0, offersLimit);
+  const params = {
+    limit: req.query.limit || DEFAULT_LIMIT,
+    skip: req.query.skip || DEFAULT_SKIP_COUNT,
+  };
+  validateParams(params);
+  const data = offers.slice(params.skip).slice(0, params.limit);
   const result = {
     data,
-    skip: skipCount,
-    limit: offersLimit,
+    skip: params.skip,
+    limit: params.limit,
     total: offers.length,
   };
   res.send(result);
@@ -41,11 +41,11 @@ offersRouter.get(`/:date`, (req, res) => {
 });
 
 offersRouter.post(``, jsonParser, multiParser, (req, res) => {
-  const saveResult = Object.assign({}, req.body);
-  saveResult.guests = parseInt(saveResult.guests, 10);
-  saveResult.price = parseInt(saveResult.price, 10);
-  saveResult.rooms = parseInt(saveResult.rooms, 10);
-  res.send(saveResult);
+  const offer = Object.assign({}, req.body);
+  offer.guests = parseInt(offer.guests, 10);
+  offer.price = parseInt(offer.price, 10);
+  offer.rooms = parseInt(offer.rooms, 10);
+  res.send(validateOffer(offer));
 });
 
 module.exports = offersRouter;

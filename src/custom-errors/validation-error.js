@@ -3,12 +3,12 @@
 const AbstractError = require(`./abstract-error`);
 const {StatusCode} = require(`../status-code`);
 
-const WrongParamsError = class extends AbstractError {
+const ValidationError = class extends AbstractError {
   constructor(errors) {
-    super(`Ошибка значений параметров запроса`);
+    super(`Ошибка валидации данных`);
     this.statusCode = StatusCode.BAD_REQUEST;
     this.errors = errors;
   }
 };
 
-module.exports = WrongParamsError;
+module.exports = ValidationError;
