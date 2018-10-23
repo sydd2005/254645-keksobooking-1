@@ -1,5 +1,7 @@
 'use strict';
 
+const {takeRandomItem} = require(`./utils`);
+
 const TITLES = [
   `Большая уютная квартира`,
   `Маленькая неуютная квартира`,
@@ -68,10 +70,6 @@ const GUEST_NUMBER_BOUNDARIES = {
 
 const generateRandomIntegerInclusive = (lowBound, highBound) => {
   return lowBound + Math.floor(Math.random() * (highBound - lowBound + 1));
-};
-
-const takeRandomItem = (sourceArray) => {
-  return sourceArray[Math.floor(Math.random() * sourceArray.length)];
 };
 
 const takeRandomItems = (sourceArray) => {

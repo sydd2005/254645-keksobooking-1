@@ -2,7 +2,7 @@
 
 const AbstractError = class extends Error {
   toJSON() {
-    return JSON.stringify(this.errors);
+    return this.errors;
   }
 };
 

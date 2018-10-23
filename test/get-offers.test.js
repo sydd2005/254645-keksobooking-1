@@ -75,7 +75,7 @@ describe(`GET /api/offers`, async () => {
       .expect(400)
       .expect(`Content-Type`, /json/);
 
-    const badArguments = JSON.parse(response.body);
+    const badArguments = response.body;
     assert.deepStrictEqual(badArguments[0], {
       error: `Wrong Parameter Error`,
       fieldName: `limit`,
@@ -90,7 +90,7 @@ describe(`GET /api/offers`, async () => {
       .expect(400)
       .expect(`Content-Type`, /json/);
 
-    const badArguments = JSON.parse(response.body);
+    const badArguments = response.body;
     assert.deepStrictEqual(badArguments[0], {
       error: `Wrong Parameter Error`,
       fieldName: `skip`,
@@ -122,7 +122,7 @@ describe(`GET /api/offers/:date`, () => {
       .expect(404)
       .expect(`Content-Type`, /json/);
 
-    const notFoundError = JSON.parse(response.body)[0];
+    const notFoundError = response.body[0];
     assert.deepStrictEqual(notFoundError, {
       error: `Данных не найдено`,
       errorMessage: `Нет такого предложения!`,
