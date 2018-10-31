@@ -2,7 +2,16 @@
 
 const request = require(`supertest`);
 const assert = require(`assert`);
-const {app} = require(`../src/server`);
+const express = require(`express`);
+const OffersStore = require(`../src/offers/offers-store`);
+const {createOffersRouter} = require(`../src/offers/offers-router`);
+const dbMock = require(`./mock/db-mock`);
+
+const offersStore = new OffersStore(dbMock);
+const offersRouter = createOffersRouter(offersStore);
+
+const app = express();
+app.use(`/api/offers`, offersRouter);
 
 describe(`GET /api/offers`, async () => {
 

@@ -2,11 +2,10 @@
 
 const express = require(`express`);
 const multer = require(`multer`);
-const NotFoundError = require(`./custom-errors/not-found-error`);
-const {validateParams} = require(`./validation/validate-params`);
-const {validateOffer} = require(`./validation/validate-offer`);
-const {wrapAsync, takeRandomItem} = require(`./utils`);
-const offers = require(`../data/offers.json`);
+const NotFoundError = require(`../custom-errors/not-found-error`);
+const {validateParams} = require(`../validation/validate-params`);
+const {validateOffer} = require(`../validation/validate-offer`);
+const {wrapAsync, takeRandomItem} = require(`../utils`);
 
 const DEFAULT_LIMIT = 20;
 const DEFAULT_SKIP_COUNT = 0;
@@ -21,30 +20,24 @@ const multiParser = multer({storage: multer.memoryStorage()})
                       {name: `preview`, maxCount: 1},
                     ]);
 
-offersRouter.get(``, (req, res) => {
+offersRouter.get(``, wrapAsync(async (req, res, _next) => {
   const params = {
     limit: req.query.limit || DEFAULT_LIMIT,
     skip: req.query.skip || DEFAULT_SKIP_COUNT,
   };
   validateParams(params);
-  const data = offers.slice(params.skip).slice(0, params.limit);
-  const result = {
-    data,
-    skip: params.skip,
-    limit: params.limit,
-    total: offers.length,
-  };
-  res.send(result);
-});
+  const offersResult = await offersRouter.offersStore.getOffers(params); // offers.slice(params.skip).slice(0, params.limit);
+  res.send(offersResult);
+}));
 
-offersRouter.get(`/:date`, (req, res) => {
-  const requestDate = req.params.date;
-  const foundResult = offers.find((it) => it.date === parseInt(requestDate, 10));
+offersRouter.get(`/:date`, wrapAsync(async (req, res) => {
+  const requestDate = parseInt(req.params.date, 10);
+  const foundResult = await offersRouter.offersStore.getOffer(requestDate); // offers.find((it) => it.date === parseInt(requestDate, 10));
   if (!foundResult) {
     throw new NotFoundError(`Нет такого предложения!`);
   }
   res.send(foundResult);
-});
+}));
 
 offersRouter.post(``, jsonParser, multiParser, wrapAsync(async (req, res, next) => {
   let offer = Object.assign({}, req.body);
@@ -79,4 +72,13 @@ offersRouter.post(``, jsonParser, multiParser, wrapAsync(async (req, res, next) 
   }
 }));
 
-module.exports = offersRouter;
+offersRouter.use((err, req, res, _next) => {
+  res.status(err.statusCode).send(err);
+});
+
+module.exports = {
+  createOffersRouter: (offersStore) => {
+    offersRouter.offersStore = offersStore;
+    return offersRouter;
+  },
+};
