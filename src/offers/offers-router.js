@@ -6,6 +6,7 @@ const NotFoundError = require(`../custom-errors/not-found-error`);
 const {validateParams} = require(`../validation/validate-params`);
 const {validateOffer} = require(`../validation/validate-offer`);
 const {wrapAsync, takeRandomItem} = require(`../utils`);
+const toStream = require(`buffer-to-stream`);
 
 const DEFAULT_LIMIT = 20;
 const DEFAULT_SKIP_COUNT = 0;
@@ -26,13 +27,13 @@ offersRouter.get(``, wrapAsync(async (req, res, _next) => {
     skip: req.query.skip || DEFAULT_SKIP_COUNT,
   };
   validateParams(params);
-  const offersResult = await offersRouter.offersStore.getOffers(params); // offers.slice(params.skip).slice(0, params.limit);
+  const offersResult = await offersRouter.offersStore.getOffers(params);
   res.send(offersResult);
 }));
 
 offersRouter.get(`/:date`, wrapAsync(async (req, res) => {
   const requestDate = parseInt(req.params.date, 10);
-  const foundResult = await offersRouter.offersStore.getOffer(requestDate); // offers.find((it) => it.date === parseInt(requestDate, 10));
+  const foundResult = await offersRouter.offersStore.getOffer(requestDate);
   if (!foundResult) {
     throw new NotFoundError(`Нет такого предложения!`);
   }
@@ -40,14 +41,16 @@ offersRouter.get(`/:date`, wrapAsync(async (req, res) => {
 }));
 
 offersRouter.post(``, jsonParser, multiParser, wrapAsync(async (req, res, next) => {
-  let offer = Object.assign({}, req.body);
+  const offer = Object.assign({}, req.body);
   offer.guests = parseInt(offer.guests, 10);
   offer.price = parseInt(offer.price, 10);
   offer.rooms = parseInt(offer.rooms, 10);
 
+  let avatar;
+  let preview;
   if (req.files) {
-    const avatar = req.files[`avatar`] ? req.files[`avatar`][0] : null;
-    const preview = req.files[`preview`] ? req.files[`preview`][0] : null;
+    avatar = req.files[`avatar`] ? req.files[`avatar`][0] : null;
+    preview = req.files[`preview`] ? req.files[`preview`][0] : null;
     if (avatar) {
       offer.avatar = {
         name: avatar.originalname,
@@ -63,9 +66,18 @@ offersRouter.post(``, jsonParser, multiParser, wrapAsync(async (req, res, next) 
   }
 
   try {
-    // TODO: save offer to database here
     const validatedOffer = await validateOffer(offer);
     validatedOffer.name = validatedOffer.name || takeRandomItem(NAMES);
+    const {insertedId} = await offersRouter.offersStore.saveOffer(validatedOffer);
+
+    const fileWrites = [];
+    if (avatar) {
+      fileWrites.push(offersRouter.imagesStore.saveAvatar(insertedId, toStream(avatar.buffer)));
+    }
+    if (preview) {
+      fileWrites.push(offersRouter.imagesStore.savePreview(insertedId, toStream(preview.buffer)));
+    }
+    await Promise.all(fileWrites);
     res.send(validatedOffer);
   } catch (error) {
     next(error);
@@ -77,8 +89,9 @@ offersRouter.use((err, req, res, _next) => {
 });
 
 module.exports = {
-  createOffersRouter: (offersStore) => {
+  createOffersRouter: (offersStore, imagesStore) => {
     offersRouter.offersStore = offersStore;
+    offersRouter.imagesStore = imagesStore;
     return offersRouter;
   },
 };

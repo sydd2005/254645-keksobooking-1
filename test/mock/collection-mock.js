@@ -8,8 +8,8 @@ class CollectionMock {
     this.documents = documents;
   }
 
-  async find() {
-    return Promise.resolve(new CursorMock(this.documents));
+  find() {
+    return new CursorMock(this.documents);
   }
 
   async findOne({date}) {
@@ -17,7 +17,9 @@ class CollectionMock {
   }
 
   async insertOne(_document) {
-    return 2018;
+    return {
+      insertedId: 2018,
+    };
   }
 }
 

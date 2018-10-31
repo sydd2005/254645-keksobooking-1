@@ -24,7 +24,7 @@ class OffersStore {
   }
 
   async getOffers({skip, limit}) {
-    const cursor = await (await this.collection).find();
+    const cursor = (await this.collection).find();
     return {
       data: await cursor.skip(skip).limit(limit).toArray(),
       skip,
