@@ -138,4 +138,15 @@ describe(`GET /api/offers/:date`, () => {
     });
   });
 
+  it(`should return avatar image`, async () => {
+    return await request(app)
+      .get(`/api/offers/1539378808609/avatar`)
+      .set(`Accept`, `image/png, image/jpg`)
+      .buffer(false)
+      .parse((res, cb) => cb())
+      .expect(200)
+      .expect(`Content-Type`, /image/)
+      .expect(`Content-Length`, `65536`);
+  });
+
 });

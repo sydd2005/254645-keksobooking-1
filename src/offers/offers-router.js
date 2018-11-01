@@ -40,6 +40,30 @@ offersRouter.get(`/:date`, wrapAsync(async (req, res) => {
   res.send(foundResult);
 }));
 
+offersRouter.get(`/:date/avatar`, wrapAsync(async (req, res) => {
+  const requestDate = parseInt(req.params.date, 10);
+  const foundOffer = await offersRouter.offersStore.getOffer(requestDate);
+  if (!foundOffer) {
+    throw new NotFoundError(`Нет такого предложения!`);
+  }
+
+  const foundImage = await offersRouter.imagesStore.getAvatar(foundOffer._id);
+  if (!foundImage) {
+    throw new NotFoundError(`Аватар этого предложения не найден!`);
+  }
+
+  res.header(`Content-Type`, `image/png`);
+  res.header(`Content-Length`, foundImage.fileInfo.length);
+  res.on(`error`, (err) => console.error(err));
+  res.on(`end`, () => res.end());
+
+  const imageStream = foundImage.stream;
+  imageStream.on(`error`, (err) => console.error(err));
+  imageStream.on(`end`, () => res.end());
+
+  imageStream.pipe(res);
+}));
+
 offersRouter.post(``, jsonParser, multiParser, wrapAsync(async (req, res, next) => {
   const offer = Object.assign({}, req.body);
   offer.guests = parseInt(offer.guests, 10);
