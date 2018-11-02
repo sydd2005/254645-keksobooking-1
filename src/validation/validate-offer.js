@@ -30,6 +30,7 @@ const validationSchema = Joi.object().keys({
     mimetype: Joi.string().regex(/^image\//).required(),
   }),
   name: Joi.string().optional(),
+  description: Joi.string().optional(),
 });
 
 const validateOffer = (offer) => {

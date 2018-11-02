@@ -92,7 +92,14 @@ const createOffersRouter = (offersStore, imagesStore) => {
 
     try {
       const validatedOffer = await validateOffer(offer);
+
       validatedOffer.name = validatedOffer.name || takeRandomItem(NAMES);
+      const coords = validatedOffer.address.split(`,`);
+      validatedOffer.location = {
+        x: parseInt(coords[0], 10),
+        y: parseInt(coords[1], 10),
+      };
+
       const {insertedId} = await offersStore.saveOffer(validatedOffer);
 
       const fileWrites = [];
