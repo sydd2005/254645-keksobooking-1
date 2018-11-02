@@ -7,6 +7,7 @@ const {validateParams} = require(`../validation/validate-params`);
 const {validateOffer} = require(`../validation/validate-offer`);
 const {wrapAsync, takeRandomItem} = require(`../utils`);
 const toStream = require(`buffer-to-stream`);
+const logger = require(`../logger`);
 
 const DEFAULT_LIMIT = 20;
 const DEFAULT_SKIP_COUNT = 0;
@@ -55,11 +56,11 @@ const createOffersRouter = (offersStore, imagesStore) => {
 
     res.header(`Content-Type`, `image/png`);
     res.header(`Content-Length`, foundImage.fileInfo.length);
-    res.on(`error`, (err) => console.error(err));
+    res.on(`error`, (err) => logger.error(err));
     res.on(`end`, () => res.end());
 
     const imageStream = foundImage.stream;
-    imageStream.on(`error`, (err) => console.error(err));
+    imageStream.on(`error`, (err) => logger.error(err));
     imageStream.on(`end`, () => res.end());
 
     imageStream.pipe(res);

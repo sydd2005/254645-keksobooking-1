@@ -1,5 +1,7 @@
 'use strict';
 
+const logger = require(`../logger`);
+
 const AVATARS_BUCKET_NAME = `avatars`;
 const PREVIEWS_BUCKET_NAME = `previews`;
 
@@ -25,7 +27,7 @@ class ImagesStore {
         bucketName: name,
       });
     } catch (error) {
-      console.error(`Не удалось получить доступ к хранилищу ${name}`);
+      logger.error(`Не удалось получить доступ к хранилищу ${name}`);
     }
     return bucket;
   }

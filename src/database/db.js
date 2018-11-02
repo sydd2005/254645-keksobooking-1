@@ -1,6 +1,7 @@
 'use strict';
 
 const {MongoClient} = require(`mongodb`);
+const logger = require(`../logger`);
 
 const DEFAULT_DB_URL = `mongodb://localhost:27017`;
 const DEFAULT_DB_NAME = `keksobooking`;
@@ -13,7 +14,7 @@ const getDb = async () => {
     const dbClient = await MongoClient.connect(dbUrl, {useNewUrlParser: true});
     db = dbClient.db(dbName);
   } catch (error) {
-    console.error(`Не удалось подключиться к базе`, error);
+    logger.error(`Не удалось подключиться к базе`, error);
     process.exit(1);
   }
   return db;

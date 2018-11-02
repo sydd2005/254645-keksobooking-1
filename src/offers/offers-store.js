@@ -1,5 +1,7 @@
 'use strict';
 
+const logger = require(`../logger`);
+
 class OffersStore {
 
   constructor(db) {
@@ -18,7 +20,7 @@ class OffersStore {
     try {
       collection = (await this._db).collection(`offers`);
     } catch (error) {
-      console.error(`Не удалось получить доступ к коллекции offers`);
+      logger.error(`Не удалось получить доступ к коллекции offers`);
     }
     return collection;
   }
