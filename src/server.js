@@ -7,7 +7,7 @@ const OffersStore = require(`./offers/offers-store`);
 const ImagesStore = require(`./images/images-store`);
 const {createOffersRouter} = require(`./offers/offers-router`);
 
-const HOST_NAME = `localhost`;
+const DEFAULT_HOST_NAME = `localhost`;
 const DEFAULT_PORT = 3000;
 
 const app = express();
@@ -27,9 +27,10 @@ const execute = async () => {
   app.use(express.static(`${__dirname}/../static/`));
   app.use(`/api/offers`, offersRouter);
 
-  const port = process.argv.slice(2)[1] || DEFAULT_PORT;
-  app.listen(port, HOST_NAME, () => {
-    console.log(`сервер запущен на http://${HOST_NAME}:${port}`);
+  const port = parseInt(process.env.SERVER_PORT, 10) || DEFAULT_PORT;
+  const hostname = process.env.SERVER_HOST || DEFAULT_HOST_NAME;
+  app.listen(port, hostname, () => {
+    console.log(`сервер запущен на http://${hostname}:${port}`);
   });
 
 };
