@@ -10,7 +10,11 @@ const {createOffersRouter} = require(`./offers/offers-router`);
 const DEFAULT_HOST_NAME = `localhost`;
 const DEFAULT_PORT = 3000;
 
-const app = express();
+const addCORS = (req, res, next) => {
+  res.header(`Access-Control-Allow-Origin`, `*`);
+  res.header(`Access-Control-Allow-Headers`, `Origin, X-Requester-With, Content-Type, Accept`);
+  next();
+};
 
 const execute = async () => {
 
@@ -24,6 +28,9 @@ const execute = async () => {
   const imagesStore = new ImagesStore(database, bucketFactory);
   const offersRouter = createOffersRouter(offersStore, imagesStore);
 
+  const app = express();
+
+  app.use(addCORS);
   app.use(express.static(`${__dirname}/../static/`));
   app.use(`/api/offers`, offersRouter);
 

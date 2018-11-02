@@ -14,8 +14,7 @@ const DEFAULT_SKIP_COUNT = 0;
 const NAMES = [`Keks`, `Pavel`, `Nikolay`, `Alex`, `Ulyana`, `Anastasyia`, `Julia`];
 
 const createOffersRouter = (offersStore, imagesStore) => {
-  // eslint-disable-next-line new-cap
-  const offersRouter = express.Router();
+  const offersRouter = new express.Router();
   const jsonParser = express.json();
   const multiParser = multer({storage: multer.memoryStorage()})
                     .fields([
