@@ -24,8 +24,8 @@ const createOffersRouter = (offersStore, imagesStore) => {
 
   offersRouter.get(``, wrapAsync(async (req, res, _next) => {
     const params = {
-      limit: req.query.limit || DEFAULT_LIMIT,
-      skip: req.query.skip || DEFAULT_SKIP_COUNT,
+      limit: parseInt(req.query.limit, 10) || DEFAULT_LIMIT,
+      skip: parseInt(req.query.skip, 10) || DEFAULT_SKIP_COUNT,
     };
     validateParams(params);
     const offersResult = await offersStore.getOffers(params);
