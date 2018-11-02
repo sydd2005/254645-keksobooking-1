@@ -18,5 +18,5 @@ const getDb = async () => {
 };
 
 module.exports = {
-  db: getDb(),
+  getDb,
 };
