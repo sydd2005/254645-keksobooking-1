@@ -9,7 +9,11 @@ const name = `help`;
 const description = `печатает справочную информацию`;
 commands.unshift({name, description});
 
-const commandsInfo = commands.map((command) => `--${colors.grey(command.name)} — ${colors.green(command.description)}`).join(`;\n`) + `.`;
+const getCommandInfo = (command) => {
+  const paramsInfo = command.paramsInfo || ``;
+  return `--${colors.grey(command.name)} ${colors.grey(paramsInfo)}— ${colors.green(command.description)}`;
+};
+const commandsInfo = commands.map(getCommandInfo).join(`;\n`) + `.`;
 module.exports = {
   name,
   description,

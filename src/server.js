@@ -34,7 +34,7 @@ const execute = async () => {
   app.use(express.static(`${__dirname}/../static/`));
   app.use(`/api/offers`, offersRouter);
 
-  const port = parseInt(process.env.SERVER_PORT, 10) || DEFAULT_PORT;
+  const port = parseInt(process.argv.slice(2)[1], 10) || parseInt(process.env.SERVER_PORT, 10) || DEFAULT_PORT;
   const hostname = process.env.SERVER_HOST || DEFAULT_HOST_NAME;
   app.listen(port, hostname, () => {
     console.log(`сервер запущен на http://${hostname}:${port}`);
@@ -44,6 +44,7 @@ const execute = async () => {
 
 module.exports = {
   name: `server`,
+  paramsInfo: `[PORT] `,
   description: `запускает http-сервер на указанном порту, по-умолчанию на ${DEFAULT_PORT}`,
   execute,
 };
