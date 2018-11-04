@@ -34,6 +34,13 @@ const DATA_SAMPLE = {
   features: [`elevator`, `conditioner`]
 };
 
+const DATA_SAMPLE_ADDITION = {
+  location: {
+    x: 570,
+    y: 472,
+  }
+};
+
 describe(`POST /api/offers`, async () => {
 
   it(`should respond with the same data sample, sent as json`, async () => {
@@ -45,7 +52,8 @@ describe(`POST /api/offers`, async () => {
     .expect(200)
     .expect(`Content-Type`, /json/);
 
-    assert.deepStrictEqual(response.body, DATA_SAMPLE);
+    const expectedResult = Object.assign({}, DATA_SAMPLE, DATA_SAMPLE_ADDITION);
+    assert.deepStrictEqual(response.body, expectedResult);
     return response;
   });
 
@@ -58,7 +66,8 @@ describe(`POST /api/offers`, async () => {
     .expect(200)
     .expect(`Content-Type`, /json/);
 
-    assert.deepStrictEqual(response.body, DATA_SAMPLE);
+    const expectedResult = Object.assign({}, DATA_SAMPLE, DATA_SAMPLE_ADDITION);
+    assert.deepStrictEqual(response.body, expectedResult);
     return response;
   });
 

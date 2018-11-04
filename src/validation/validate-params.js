@@ -12,6 +12,8 @@ const validateParams = (params) => {
         fieldName: key,
         errorMessage: `Некорректное значение параметра ${key}, ожидалось целое значение, указано - "${params[key]}".`
       });
+    } else {
+      params[key] = parseInt(params[key], 10);
     }
   }
 
