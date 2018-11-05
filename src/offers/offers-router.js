@@ -116,10 +116,6 @@ const createOffersRouter = (offersStore, imagesStore) => {
     }
   }));
 
-  offersRouter.use((err, req, res, _next) => {
-    res.status(err.statusCode).send(err);
-  });
-
   return offersRouter;
 };
 

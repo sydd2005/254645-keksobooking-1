@@ -3,6 +3,7 @@
 const readline = require(`readline`);
 const {generateEntity} = require(`./generate-entity`);
 const {saveFile} = require(`./save-file`);
+const logger = require(`./logger`);
 
 const AnswerType = {
   POSITIVE: `y`,
@@ -98,7 +99,7 @@ const askForFilePathToSave = async (previousAnswerResult) => {
   };
 };
 
-const execute = async () => {
+const runQuiz = async () => {
   console.log(`Привет, пользователь!`);
 
   const questionHandlers = [
@@ -114,6 +115,10 @@ const execute = async () => {
       return;
     }
   }
+};
+
+const execute = () => {
+  runQuiz().catch((error) => logger.error(error.message));
 };
 
 module.exports = {

@@ -8,6 +8,7 @@ const ImagesStore = require(`../src/images/images-store`);
 const {createOffersRouter} = require(`../src/offers/offers-router`);
 const dbMock = require(`./mock/db-mock`);
 const GridFSBucketMock = require(`./mock/gridfs-bucket-mock`);
+const {addErrorCatcher} = require(`../src/middlewares`);
 
 const offersStore = new OffersStore(dbMock);
 const bucketFactory = {
@@ -20,6 +21,7 @@ const offersRouter = createOffersRouter(offersStore, imagesStore);
 
 const app = express();
 app.use(`/api/offers`, offersRouter);
+app.use(addErrorCatcher);
 
 const DATA_SAMPLE = {
   name: `Pavel`,
