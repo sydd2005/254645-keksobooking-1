@@ -8,6 +8,7 @@ const {validateOffer} = require(`../validation/validate-offer`);
 const {wrapAsync, takeRandomItem} = require(`../utils`);
 const toStream = require(`buffer-to-stream`);
 const logger = require(`../logger`);
+const {addHtmlRendering} = require(`../middlewares`);
 
 const DEFAULT_LIMIT = 20;
 const DEFAULT_SKIP_COUNT = 0;
@@ -22,23 +23,24 @@ const createOffersRouter = (offersStore, imagesStore) => {
                       {name: `preview`, maxCount: 1},
                     ]);
 
-  offersRouter.get(``, wrapAsync(async (req, res, _next) => {
+  offersRouter.get(``, wrapAsync(async (req, res, next) => {
     let params = {
       limit: req.query.limit || DEFAULT_LIMIT,
       skip: req.query.skip || DEFAULT_SKIP_COUNT,
     };
     params = validateParams(params);
-    const offersResult = await offersStore.getOffers(params);
-    res.send(offersResult);
+    req.data = await offersStore.getOffers(params);
+    next();
   }));
 
-  offersRouter.get(`/:date`, wrapAsync(async (req, res) => {
+  offersRouter.get(`/:date`, wrapAsync(async (req, res, next) => {
     const requestDate = parseInt(req.params.date, 10);
     const foundResult = await offersStore.getOffer(requestDate);
     if (!foundResult) {
       throw new NotFoundError(`Нет такого предложения!`);
     }
-    res.send(foundResult);
+    req.data = foundResult;
+    next();
   }));
 
   offersRouter.get(`/:date/avatar`, wrapAsync(async (req, res) => {
@@ -110,11 +112,14 @@ const createOffersRouter = (offersStore, imagesStore) => {
         fileWrites.push(imagesStore.savePreview(insertedId, toStream(preview.buffer)));
       }
       await Promise.all(fileWrites);
-      res.send(validatedOffer);
+      req.data = validatedOffer;
+      next();
     } catch (error) {
       next(error);
     }
   }));
+
+  offersRouter.use(addHtmlRendering);
 
   return offersRouter;
 };
