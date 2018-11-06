@@ -23,11 +23,11 @@ const createOffersRouter = (offersStore, imagesStore) => {
                     ]);
 
   offersRouter.get(``, wrapAsync(async (req, res, _next) => {
-    const params = {
-      limit: parseInt(req.query.limit, 10) || DEFAULT_LIMIT,
-      skip: parseInt(req.query.skip, 10) || DEFAULT_SKIP_COUNT,
+    let params = {
+      limit: req.query.limit || DEFAULT_LIMIT,
+      skip: req.query.skip || DEFAULT_SKIP_COUNT,
     };
-    validateParams(params);
+    params = validateParams(params);
     const offersResult = await offersStore.getOffers(params);
     res.send(offersResult);
   }));
@@ -115,10 +115,6 @@ const createOffersRouter = (offersStore, imagesStore) => {
       next(error);
     }
   }));
-
-  offersRouter.use((err, req, res, _next) => {
-    res.status(err.statusCode).send(err);
-  });
 
   return offersRouter;
 };
