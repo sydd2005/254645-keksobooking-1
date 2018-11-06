@@ -1,9 +1,11 @@
 'use strict';
 
 const readline = require(`readline`);
+const availableCommands = require(`./commands`);
 const {generateEntity} = require(`./generate-entity`);
 const {saveFile} = require(`./save-file`);
 const logger = require(`./logger`);
+const colors = require(`colors/safe`);
 
 const AnswerType = {
   POSITIVE: `y`,
@@ -117,8 +119,50 @@ const runQuiz = async () => {
   }
 };
 
+const showMenu = (options, activeIndex) => {
+  const commandList = options.reduce((acc, cur, idx) => {
+    const title = `${cur.name} - ${cur.description}`;
+    const command = idx === activeIndex ? colors.bold.white.bgGreen(title) : title;
+    return acc.concat(command);
+  }, []).join(`\n`);
+
+  console.log(commandList);
+};
+
+const chooseAction = async () => {
+
+  let currentActiveIndex = 0;
+  showMenu(availableCommands, currentActiveIndex);
+
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+    terminal: true,
+  });
+
+  rl.input.on(`keypress`, (character, key) => {
+    if (key.name === `up`) {
+      currentActiveIndex = currentActiveIndex <= 0 ? 0 : currentActiveIndex - 1;
+    } else if (key.name === `down`) {
+      currentActiveIndex = currentActiveIndex >= availableCommands.length - 1
+        ? availableCommands.length - 1
+        : currentActiveIndex + 1;
+    } else {
+      return;
+    }
+    readline.cursorTo(rl.output, 0, rl.output.rows - availableCommands.length - 1);
+    readline.clearScreenDown(rl.output);
+    showMenu(availableCommands, currentActiveIndex);
+  });
+
+  rl.on(`line`, () => {
+    availableCommands[currentActiveIndex].execute();
+    rl.close();
+  });
+};
+
 const execute = () => {
-  runQuiz().catch((error) => logger.error(error.message));
+  chooseAction().catch((error) => logger.error(error.message));
 };
 
 module.exports = {
