@@ -22,12 +22,12 @@ const addCORS = (req, res, next) => {
 };
 
 const addErrorCatcher = (err, req, res, _next) => {
-  const result = req.accepts(`text/html`) ? renderHtml(err) : err;
+  const result = req.accepts([`json`, `html`]) === `html` ? renderHtml(err) : err;
   res.status(err.statusCode).send(result);
 };
 
 const addHtmlRendering = (req, res, _next) => {
-  const result = req.accepts(`text/html`) ? renderHtml(req.data) : req.data;
+  const result = req.accepts([`json`, `html`]) === `html` ? renderHtml(req.data) : req.data;
   res.send(result);
 };
 
